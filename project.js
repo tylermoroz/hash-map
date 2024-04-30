@@ -7,16 +7,12 @@ class HashMap {
     this.buckets = [];
   }
 
-  print() {
-    console.log(this.buckets);
-  }
-
   hash(key) {
     let hashCode = 0;
 
     const primeNumber = 31;
     for (let i = 0; i < key.length; i++) {
-      hashCode = primeNumber * hashCode + key.charCodeAt(i);
+      hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
     }
 
     return hashCode;
@@ -24,6 +20,9 @@ class HashMap {
 
   set(key, value) {
     const index = this.hash(key);
+    // if(this.buckets.length === (this.capacity * this.loadFactor)){
+    //   this.capacity = this.capacity * 2;
+    // }
     if (!this.buckets[index]) {
       this.buckets[index] = [[key, value]];
     } else {
@@ -37,12 +36,12 @@ class HashMap {
 
   get(key) {
     const index = this.hash(key);
-    if (!this.buckets[index]) {
-      return null;
-    }
+
     for (let i = 0; i < this.buckets[index].length; i++) {
       if (this.buckets[index][i][0] === key) {
         return this.buckets[index][i][1];
+      } else {
+        return null;
       }
     }
   }
@@ -116,7 +115,8 @@ const table = new HashMap();
 table.set("dave", "smith");
 table.set("darryl", "dixon");
 table.set("tyler", "moroz");
-table.print();
+table.set("carla", "reyes");
+table.set("carlos", "benson");
 console.log(table.get("tyler"));
 console.log(table.get("darryl"));
 console.log(table.get("dave"));
@@ -129,4 +129,6 @@ console.log(table.length());
 // console.log(table.clear());
 console.log(table.keys());
 console.log(table.values());
+console.log(table.entries());
+table.set("darryl", "moroz");
 console.log(table.entries());
