@@ -1,0 +1,12 @@
+{
+  "name": "hash-map",
+  "version": "1.0.0",
+  "description": "hash map created using es6 modules",
+  "main": "hash-map.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tyler Moroz",
+  "license": "ISC"
+}
