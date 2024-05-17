@@ -40,6 +40,54 @@ class HashMap {
       bucket.append({ [key]: value });
     }
   }
+
+  get(key) {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    if (!bucket) {
+      return null;
+    }
+    let entry = bucket.getHead();
+    while (entry) {
+      if (key in entry.value) {
+        return entry.value[key];
+      }
+      entry = entry.nextNode;
+    }
+  }
+
+  has(key) {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    if (!bucket) {
+      return false;
+    }
+    let entry = bucket.getHead();
+    while (entry) {
+      if (key in entry.value) {
+        return true;
+      }
+      entry = entry.nextNode;
+    }
+  }
+
+  remove(key) {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    if (!bucket) {
+      return false;
+    }
+    let entry = bucket.getHead();
+    while (entry) {
+      if (key in entry.value) {
+        delete entry.value;
+        if (!entry.value && entry.nextNode === null) {
+          delete this.buckets[index];
+        }
+        return true;
+      }
+    }
+  }
 }
 
 const table = new HashMap();
@@ -47,35 +95,17 @@ table.set("tyler", "moroz");
 table.set("darryl", "moroz");
 table.set("tyler", "dyson");
 console.log(table.buckets[4]);
+console.log("get:", table.get("tyler"));
+console.log("get:", table.get("rick"));
+console.log("has:", table.has("darryl"));
+console.log("has:", table.has("john"));
+console.log(table.buckets[4]);
+console.log("remove:", table.remove("tyler"));
+console.log("remove:", table.remove("donald"));
+console.log(table.buckets[4]);
+table.set("tyler", "moroz");
+console.log(table.buckets[4]);
 
-// get(key) {
-//   const index = this.hash(key);
-//   const bucket = this.buckets[index];
-//   if (!bucket) {
-//     return null;
-//   }
-//   let entry = bucket.getHead();
-//   while (entry) {
-//     if (key in entry.value) {
-//       return entry.value[key];
-//     }
-//     entry = entry.next;
-//   }
-//   return null;
-// }
-// has(key) {
-//   const code = this.hash(key);
-//   const bucket = this.buckets[code];
-//   if (!bucket) {
-//     return false;
-//   }
-//   let entry = bucket.getHead();
-//   while (entry) {
-//     if (key in entry.value) {
-//       return true;
-//     }
-//   }
-// }
 // remove(key) {
 //   const code = this.hash(key);
 //   const bucket = this.buckets[code];
