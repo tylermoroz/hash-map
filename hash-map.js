@@ -81,6 +81,7 @@ class HashMap {
     while (entry) {
       if (key in entry.value) {
         delete entry.value;
+
         if (!entry.value && entry.nextNode === null) {
           delete this.buckets[index];
         }
@@ -88,45 +89,30 @@ class HashMap {
       }
     }
   }
+
+  length() {
+    return Object.keys(this.buckets).length;
+  }
 }
 
 const table = new HashMap();
 table.set("tyler", "moroz");
 table.set("darryl", "moroz");
 table.set("tyler", "dyson");
-console.log(table.buckets[4]);
-console.log("get:", table.get("tyler"));
+table.set("relyt", "mitchell");
+// console.log(table.buckets[4]);
+console.log("get:", table.get("relyt"));
 console.log("get:", table.get("rick"));
 console.log("has:", table.has("darryl"));
 console.log("has:", table.has("john"));
-console.log(table.buckets[4]);
+// console.log(table.buckets[4]);
 console.log("remove:", table.remove("tyler"));
 console.log("remove:", table.remove("donald"));
 console.log(table.buckets[4]);
-table.set("tyler", "moroz");
-console.log(table.buckets[4]);
+// table.set("tyler", "moroz");
+// console.log(table.buckets[4]);
+console.log(table.length());
 
-// remove(key) {
-//   const code = this.hash(key);
-//   const bucket = this.buckets[code];
-//   if (!bucket) {
-//     return false;
-//   }
-//   let entry = bucket.getHead();
-//   let nextEntry = entry.nextNode;
-//   while (entry) {
-//     if (key in entry.value) {
-//       delete entry.value;
-//       if (!entry.value && nextEntry === null) {
-//         delete this.buckets[code];
-//       }
-//       return true;
-//     }
-//   }
-// }
-// length() {
-//   return Object.keys(this.buckets).length;
-// }
 // clear() {
 //   this.buckets = [];
 //   return this.buckets;
