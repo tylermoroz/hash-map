@@ -90,6 +90,20 @@ class HashMap {
     }
   }
 
+  toString(key) {
+    let index = this.hash(key);
+    let bucket = this.buckets[index];
+    let current = bucket.getHead();
+    let output = "";
+
+    while (current) {
+      output += `( ${current.value[key]} ) -> `;
+      current = current.nextNode;
+    }
+    output += `${null}`;
+    console.log(`output: ${output}`);
+  }
+
   length() {
     return Object.keys(this.buckets).length;
   }
@@ -98,20 +112,18 @@ class HashMap {
 const table = new HashMap();
 table.set("tyler", "moroz");
 table.set("darryl", "moroz");
-table.set("tyler", "dyson");
 table.set("relyt", "mitchell");
-// console.log(table.buckets[4]);
-console.log("get:", table.get("relyt"));
-console.log("get:", table.get("rick"));
-console.log("has:", table.has("darryl"));
-console.log("has:", table.has("john"));
-// console.log(table.buckets[4]);
+// console.log("get:", table.get("relyt"));
+// console.log("get:", table.get("lerty"));
+// console.log("get:", table.get("rick"));
+// console.log("has:", table.has("darryl"));
+// console.log("has:", table.has("john"));
 console.log("remove:", table.remove("tyler"));
-console.log("remove:", table.remove("donald"));
-console.log(table.buckets[4]);
-// table.set("tyler", "moroz");
+// console.log("remove:", table.remove("donald"));
 // console.log(table.buckets[4]);
-console.log(table.length());
+console.log(table.buckets[4]);
+// console.log(table.length());
+table.toString("tyler");
 
 // clear() {
 //   this.buckets = [];
