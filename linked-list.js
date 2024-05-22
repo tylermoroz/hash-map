@@ -29,7 +29,6 @@ export default class LinkedList {
       prev.nextNode = node;
     }
     this.size++; // increment list size by 1
-    this.tail = node; // make the new Node the end pointer in the LinkedList
   }
 
   // adds a new Node the the start of the LinkedList
