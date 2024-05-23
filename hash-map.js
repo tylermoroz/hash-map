@@ -59,6 +59,35 @@ class HashMap {
     }
     console.log(this.buckets);
   }
+
+  get(key) {
+    let index = this.hash(key);
+    let bucket = this.buckets[index];
+    let entry = bucket.head;
+    while (entry) {
+      if (key in entry.value) {
+        return entry.value[key];
+      }
+      entry = entry.nextNode;
+    }
+    return null;
+  }
+
+  has(key) {
+    let index = this.hash(key);
+    let bucket = this.buckets[index];
+    if (!bucket) {
+      return false;
+    }
+    let entry = bucket.head;
+    while (entry) {
+      if (key in entry.value) {
+        return true;
+      }
+      entry = entry.nextNode;
+    }
+    return false;
+  }
 }
 
 const table = new HashMap();
@@ -66,3 +95,5 @@ table.set("tyler", "moroz");
 table.set("tyler", "jackson");
 table.set("relyt", "wilson");
 table.toString("tyler");
+console.log(table.get("relyt"));
+console.log(table.has("relyt"));
