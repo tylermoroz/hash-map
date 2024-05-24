@@ -27,6 +27,7 @@ class HashMap {
     let current = bucket.head;
     let output = "";
     if (!current) {
+      console.log(`output: ${null}`);
       return;
     }
     while (current) {
@@ -88,12 +89,47 @@ class HashMap {
     }
     return false;
   }
+
+  remove(key) {
+    let index = this.hash(key);
+    let bucket = this.buckets[index];
+    if (!bucket) {
+      return false;
+    }
+    let nodeToRemove = bucket.head;
+    let replaceNode = null;
+    while (nodeToRemove) {
+      if (key in nodeToRemove.value) {
+        // this is bugged, needs to remove the proper node
+        replaceNode = nodeToRemove;
+        nodeToRemove = nodeToRemove.nextNode;
+        if (nodeToRemove === null) {
+          bucket.head = null;
+          bucket.size--;
+          return true;
+        }
+        replaceNode.nextNode = nodeToRemove.nextNode;
+        nodeToRemove.nextNode = replaceNode;
+      }
+      bucket.size--;
+      return true;
+    }
+    return false;
+  }
 }
 
 const table = new HashMap();
 table.set("tyler", "moroz");
 table.set("tyler", "jackson");
 table.set("relyt", "wilson");
+table.set("darryl", "moroz");
 table.toString("tyler");
 console.log(table.get("relyt"));
+console.log(table.get("darryl"));
 console.log(table.has("relyt"));
+console.log(table.has("darryl"));
+table.toString("darryl");
+console.log(table.remove("tyler"));
+console.log(table.remove("darryl"));
+table.toString("tyler");
+table.toString("darryl");
