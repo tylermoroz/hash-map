@@ -97,22 +97,19 @@ class HashMap {
       return false;
     }
     let nodeToRemove = bucket.head;
-    let replaceNode = null;
+    let prevNode = null;
     while (nodeToRemove) {
       if (key in nodeToRemove.value) {
-        // this is bugged, needs to remove the proper node
-        replaceNode = nodeToRemove;
-        nodeToRemove = nodeToRemove.nextNode;
-        if (nodeToRemove === null) {
-          bucket.head = null;
-          bucket.size--;
-          return true;
+        if (prevNode === null) {
+          bucket.head = nodeToRemove.nextNode;
+        } else {
+          prevNode.nextNode = nodeToRemove.nextNode;
         }
-        replaceNode.nextNode = nodeToRemove.nextNode;
-        nodeToRemove.nextNode = replaceNode;
+        bucket.size--;
+        return true;
       }
-      bucket.size--;
-      return true;
+      prevNode = nodeToRemove;
+      nodeToRemove = nodeToRemove.nextNode;
     }
     return false;
   }
