@@ -8,6 +8,7 @@ class HashMap {
     this.capacity = 16;
     this.loadFactor = 0.75;
     this.buckets = [];
+    this.totalKeys = 0;
   }
 
   hash(key) {
@@ -58,6 +59,7 @@ class HashMap {
       }
       bucket.append({ [key]: value });
     }
+    this.totalKeys++;
     console.log(this.buckets);
   }
 
@@ -106,12 +108,57 @@ class HashMap {
           prevNode.nextNode = nodeToRemove.nextNode;
         }
         bucket.size--;
+        this.totalKeys--;
         return true;
       }
       prevNode = nodeToRemove;
       nodeToRemove = nodeToRemove.nextNode;
     }
     return false;
+  }
+
+  length() {
+    return this.totalKeys;
+  }
+
+  clear() {
+    this.buckets = [];
+  }
+
+  keys() {
+    let keys = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      let bucket = this.buckets[i];
+      if (bucket && bucket.head) {
+        keys.push(Object.keys(bucket.head.value)[0]);
+      }
+    }
+    return keys;
+  }
+
+  values() {
+    let values = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      let bucket = this.buckets[i];
+      if (bucket && bucket.head) {
+        values.push(Object.values(bucket.head.value)[0]);
+      }
+    }
+    return values;
+  }
+
+  entries() {
+    let entries = [];
+    for (let i = 0; i < this.buckets.length; i++) {
+      let bucket = this.buckets[i];
+      if (bucket && bucket.head) {
+        entries.push([
+          Object.keys(bucket.head.value)[0],
+          Object.values(bucket.head.value)[0],
+        ]);
+      }
+    }
+    return entries;
   }
 }
 
@@ -120,6 +167,7 @@ table.set("tyler", "moroz");
 table.set("tyler", "jackson");
 table.set("relyt", "wilson");
 table.set("darryl", "moroz");
+table.set("mark", "grayson");
 table.toString("tyler");
 console.log(table.get("relyt"));
 console.log(table.get("darryl"));
@@ -130,3 +178,7 @@ console.log(table.remove("tyler"));
 console.log(table.remove("darryl"));
 table.toString("tyler");
 table.toString("darryl");
+console.log(table.length());
+console.log(table.keys());
+console.log(table.values());
+console.log(table.entries());
