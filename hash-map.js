@@ -7,7 +7,7 @@ class HashMap {
   constructor() {
     this.capacity = 16;
     this.loadFactor = 0.75;
-    this.buckets = [];
+    this.buckets = new Array(this.capacity).fill(null);
     this.totalKeys = 0;
   }
 
@@ -25,6 +25,10 @@ class HashMap {
   toString(key) {
     let index = this.hash(key);
     let bucket = this.buckets[index];
+    if (!bucket) {
+      console.log(`output: ${null}`);
+      return;
+    }
     let current = bucket.head;
     let output = "";
     if (!current) {
@@ -39,6 +43,28 @@ class HashMap {
     }
     output += `${null}`;
     console.log(`output: ${output}`);
+  }
+
+  grow() {
+    if (this.totalKeys >= this.capacity * this.loadFactor) {
+      this.capacity = this.capacity * 2;
+      const oldBuckets = this.buckets;
+      this.buckets = new Array(this.capacity).fill(null);
+      this.totalKeys = 0;
+
+      for (const bucket of oldBuckets) {
+        if (bucket) {
+          let current = bucket.head;
+          while (current) {
+            this.set(
+              Object.keys(current.value)[0],
+              Object.values(current.value)[0]
+            );
+            current = current.nextNode;
+          }
+        }
+      }
+    }
   }
 
   set(key, value) {
@@ -60,12 +86,13 @@ class HashMap {
       bucket.append({ [key]: value });
     }
     this.totalKeys++;
-    console.log(this.buckets);
+    this.grow();
   }
 
   get(key) {
     let index = this.hash(key);
     let bucket = this.buckets[index];
+    if (!bucket) return null;
     let entry = bucket.head;
     while (entry) {
       if (key in entry.value) {
@@ -122,7 +149,7 @@ class HashMap {
   }
 
   clear() {
-    this.buckets = [];
+    this.buckets = new Array(this.capacity).fill(null);
   }
 
   keys() {
@@ -167,7 +194,21 @@ table.set("tyler", "moroz");
 table.set("tyler", "jackson");
 table.set("relyt", "wilson");
 table.set("darryl", "moroz");
-table.set("mark", "grayson");
+table.set("jake", "johnson");
+table.set("quinn", "marquez");
+table.set("holly", "burreu");
+table.set("jessica", "hilton");
+table.set("hildy", "watts");
+table.set("kelly", "mills");
+table.set("hannah", "donaldson");
+table.set("rachel", "olisten");
+table.set("penny", "carver");
+table.set("wanda", "innis");
+table.set("ellis", "fantis");
+table.set("henry", "anders");
+table.set("glenn", "junta");
+table.set("seth", "henten");
+table.set("lisa", "lockstray");
 table.toString("tyler");
 console.log(table.get("relyt"));
 console.log(table.get("darryl"));
@@ -181,4 +222,7 @@ table.toString("darryl");
 console.log(table.length());
 console.log(table.keys());
 console.log(table.values());
+console.log(table.buckets);
 console.log(table.entries());
+console.log("capacity:", table.capacity);
+console.log("total keys:", table.length());
