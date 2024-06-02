@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 //Import LinkedList class from the linked-list module
 import LinkedList from "./linked-list.js";
 
@@ -253,41 +255,3 @@ class HashMap {
     return entries;
   }
 }
-
-const table = new HashMap();
-table.set("tyler", "moroz");
-table.set("tyler", "jackson");
-table.set("relyt", "wilson");
-table.set("darryl", "moroz");
-table.set("jake", "johnson");
-table.set("quinn", "marquez");
-table.set("holly", "burreu");
-table.set("jessica", "hilton");
-table.set("hildy", "watts");
-table.set("kelly", "mills");
-table.set("hannah", "donaldson");
-table.set("rachel", "olisten");
-table.set("penny", "carver");
-table.set("wanda", "innis");
-table.set("ellis", "fantis");
-table.set("henry", "anders");
-table.set("glenn", "junta");
-table.set("seth", "henten");
-table.set("lisa", "lockstray");
-table.toString("tyler");
-console.log(table.get("relyt"));
-console.log(table.get("darryl"));
-console.log(table.has("relyt"));
-console.log(table.has("darryl"));
-table.toString("darryl");
-console.log(table.remove("tyler"));
-console.log(table.remove("darryl"));
-table.toString("tyler");
-table.toString("darryl");
-console.log(table.length());
-console.log(table.keys());
-console.log(table.values());
-console.log(table.buckets);
-console.log(table.entries());
-console.log("capacity:", table.capacity);
-console.log("total keys:", table.length());
