@@ -36,7 +36,7 @@ class HashMap {
 
   // Method to convert a key to a string representation
   toString(key) {
-    let index = this.hash(key);
+    const index = this.hash(key);
     let bucket = this.buckets[index];
 
     // If the bucket is empty, output null
@@ -44,14 +44,8 @@ class HashMap {
       console.log(`output: ${null}`);
       return;
     }
-    let current = bucket.head;
+    let current = bucket.getHead();
     let output = "";
-
-    // If the bucket's linked list is empty, output null
-    if (!current) {
-      console.log(`output: ${null}`);
-      return;
-    }
 
     // Traverse the linked list and build the output string
     while (current) {
@@ -69,9 +63,9 @@ class HashMap {
   // Method to resize the hash map when the load factor is exceeded
   grow() {
     // Check if resizing is needed based on the load factor
-    if (this.totalKeys >= this.capacity * this.loadFactor) {
+    if (this.totalKeys > this.capacity * this.loadFactor) {
       // Double the capacity
-      this.capacity = this.capacity * 2;
+      this.capacity *= 2;
 
       // Save the current buckets
       const oldBuckets = this.buckets;
@@ -83,7 +77,7 @@ class HashMap {
       // Rehash and reinsert existing entries into the new buckets
       for (const bucket of oldBuckets) {
         if (bucket) {
-          let current = bucket.head;
+          let current = bucket.getHead();
           while (current) {
             this.set(
               Object.keys(current.value)[0],
@@ -98,7 +92,7 @@ class HashMap {
 
   // Method to add or update a key-value pair in the hash map
   set(key, value) {
-    let index = this.hash(key);
+    const index = this.hash(key);
     let bucket = this.buckets[index];
 
     // If the bucket is empty, create a new linked list and add the entry
@@ -108,13 +102,13 @@ class HashMap {
       this.buckets[index] = newList;
     } else {
       // Otherwise, update the existing entry or append a new entry
-      let entry = bucket.head;
-      while (entry) {
-        if (key in entry.value) {
-          entry.value[key] = value;
+      let current = bucket.getHead();
+      while (current) {
+        if (key in current.value) {
+          current.value[key] = value;
           return;
         }
-        entry = entry.nextNode;
+        current = current.nextNode;
       }
       bucket.append({ [key]: value });
     }
@@ -126,19 +120,19 @@ class HashMap {
 
   // Method to retrieve the value for a given key
   get(key) {
-    let index = this.hash(key);
+    const index = this.hash(key);
     let bucket = this.buckets[index];
 
     // If the bucket is empty, return null
     if (!bucket) return null;
 
     // Traverse the linked list to find the entry with the given key
-    let entry = bucket.head;
-    while (entry) {
-      if (key in entry.value) {
-        return entry.value[key];
+    let current = bucket.getHead();
+    while (current) {
+      if (key in current.value) {
+        return current.value[key];
       }
-      entry = entry.nextNode;
+      current = current.nextNode;
     }
 
     // If the key is not found, return null
@@ -147,7 +141,7 @@ class HashMap {
 
   // Method to check if a key exists in the hash map
   has(key) {
-    let index = this.hash(key);
+    const index = this.hash(key);
     let bucket = this.buckets[index];
 
     // If the bucket is empty, return false
@@ -156,12 +150,12 @@ class HashMap {
     }
 
     // Traverse the linked list to find the entry with the given key
-    let entry = bucket.head;
-    while (entry) {
-      if (key in entry.value) {
+    let current = bucket.getHead();
+    while (current) {
+      if (key in current.value) {
         return true;
       }
-      entry = entry.nextNode;
+      current = current.nextNode;
     }
 
     // If the key is not found, return false
@@ -170,7 +164,7 @@ class HashMap {
 
   // Method to remove a key-value pair from the hash map
   remove(key) {
-    let index = this.hash(key);
+    const index = this.hash(key);
     let bucket = this.buckets[index];
 
     // If the bucket is empty, return false
@@ -179,21 +173,21 @@ class HashMap {
     }
 
     // Traverse the linked list to find and remove the entry with the given key
-    let nodeToRemove = bucket.head;
-    let prevNode = null;
-    while (nodeToRemove) {
-      if (key in nodeToRemove.value) {
-        if (prevNode === null) {
-          bucket.head = nodeToRemove.nextNode;
+    let current = bucket.getHead();
+    let prev = null;
+    while (current) {
+      if (key in current.value) {
+        if (prev === null) {
+          bucket.head = current.nextNode;
         } else {
-          prevNode.nextNode = nodeToRemove.nextNode;
+          prev.nextNode = current.nextNode;
         }
         bucket.size--;
         this.totalKeys--;
         return true;
       }
-      prevNode = nodeToRemove;
-      nodeToRemove = nodeToRemove.nextNode;
+      prev = current;
+      current = current.nextNode;
     }
 
     // If the key is not found, return false
@@ -207,6 +201,7 @@ class HashMap {
 
   // Method to clear all key-value pairs from the hash map
   clear() {
+    this.capacity = 16;
     this.buckets = new Array(this.capacity).fill(null);
   }
 
@@ -218,7 +213,11 @@ class HashMap {
     for (let i = 0; i < this.buckets.length; i++) {
       let bucket = this.buckets[i];
       if (bucket && bucket.head) {
-        keys.push(Object.keys(bucket.head.value)[0]);
+        let current = bucket.getHead();
+        while (current) {
+          keys.push(Object.keys(current.value)[0]);
+          current = current.nextNode;
+        }
       }
     }
     return keys;
@@ -232,7 +231,11 @@ class HashMap {
     for (let i = 0; i < this.buckets.length; i++) {
       let bucket = this.buckets[i];
       if (bucket && bucket.head) {
-        values.push(Object.values(bucket.head.value)[0]);
+        let current = bucket.getHead();
+        while (current) {
+          values.push(Object.values(current.value)[0]);
+          current = current.nextNode;
+        }
       }
     }
     return values;
@@ -246,12 +249,67 @@ class HashMap {
     for (let i = 0; i < this.buckets.length; i++) {
       let bucket = this.buckets[i];
       if (bucket && bucket.head) {
-        entries.push([
-          Object.keys(bucket.head.value)[0],
-          Object.values(bucket.head.value)[0],
-        ]);
+        let current = bucket.getHead();
+        while (current) {
+          entries.push([
+            Object.keys(current.value)[0],
+            Object.values(current.value)[0],
+          ]);
+          current = current.nextNode;
+        }
       }
     }
     return entries;
   }
 }
+
+const test = new HashMap();
+
+test.set("apple", "red");
+test.set("banana", "yellow");
+test.set("carrot", "orange");
+test.set("dog", "brown");
+test.set("elephant", "gray");
+test.set("frog", "green");
+test.set("grape", "purple");
+test.set("hat", "black");
+test.set("ice cream", "blue");
+test.set("jacket", "white");
+test.set("kite", "red");
+test.set("lion", "golden");
+test.set("moon", "silver");
+console.log(test.get("jacket"));
+console.log(test.has("kite"));
+console.log(test.remove("apple"));
+console.log(test.length());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
+test.toString("dog");
+test.clear();
+
+console.log(test.buckets);
+
+test.set("apple", "red");
+test.set("banana", "yellow");
+test.set("carrot", "orange");
+test.set("dog", "brown");
+test.set("elephant", "gray");
+test.set("frog", "green");
+test.set("grape", "purple");
+test.set("hat", "black");
+test.set("ice cream", "blue");
+test.set("jacket", "white");
+test.set("kite", "red");
+test.set("lion", "golden");
+test.set("moon", "silver");
+console.log(test.get("jacket"));
+console.log(test.has("kite"));
+console.log(test.remove("apple"));
+console.log(test.length());
+console.log(test.keys());
+console.log(test.values());
+console.log(test.entries());
+test.toString("apple");
+
+console.log(test.buckets);

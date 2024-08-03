@@ -36,4 +36,9 @@ export default class LinkedList {
     // Increment the size of the list
     this.size++;
   }
+
+  //returns the head node of the linked list
+  getHead() {
+    return this.head;
+  }
 }
